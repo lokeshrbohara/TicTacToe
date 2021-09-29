@@ -32,7 +32,7 @@ public class Dialog extends AppCompatDialogFragment {
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Play.fa.finish();
+                        Play.playEnd.finish();
                         Intent intent = new Intent(getActivity(), Play.class);
                         startActivity(intent);
                         
@@ -41,7 +41,7 @@ public class Dialog extends AppCompatDialogFragment {
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Play.fa.finish();
+                        Play.playEnd.finish();
                         Intent intent = new Intent(getActivity(), Play.class);
                         startActivity(intent);
                     }

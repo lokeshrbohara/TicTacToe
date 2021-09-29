@@ -149,11 +149,11 @@ public class Play extends AppCompatActivity {
         resetGame();
     }
 
-    public static Play fa;
+    public static Play playEnd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        fa = this;
+        playEnd = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
