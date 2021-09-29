@@ -31,6 +31,7 @@ public class Profile extends AppCompatActivity {
     private String luserimage;
     private EditText requestText;
     private TextView acceptText;
+    private Boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +60,17 @@ public class Profile extends AppCompatActivity {
                 // Get Post object and use the values to update the UI
                 OnlineUser post = dataSnapshot.getValue(OnlineUser.class);
                 acceptText.setText(post.request);
-                if(!post.accept.isEmpty())
+
+                if(!post.accept.isEmpty() && !flag)
                 {
+
                     String acceptorEmail = post.accept;
                     SharedPreferences.Editor editor = getApplicationContext()
                             .getSharedPreferences("MyPrefs" , MODE_PRIVATE)
                             .edit();
                     editor.putString("playerType","requestor");
                     editor.putString("gameID",acceptorEmail+"_"+lmail.split("@")[0]);
-
+                    Log.d("WHYHERE" , "_____________________________________________");
                     editor.apply();
 
                     Intent intent = new Intent(Profile.this, Play.class);
@@ -103,6 +106,7 @@ public class Profile extends AppCompatActivity {
 
             if(!acceptEmail.isEmpty())
             {
+                flag = true;
                 mDatabase.child("online_users").child(lmail.split("@")[0]).child("accept").setValue(acceptEmail);
                 mDatabase.child("online_users").child(acceptEmail).child("accept").setValue(lmail.split("@")[0]);
 

@@ -1,8 +1,8 @@
 package com.example.tictactoe;
 
 public class OnlineUser {
-    public String accept;
-    public String request;
+    public String accept="";
+    public String request="";
 
     public OnlineUser() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)

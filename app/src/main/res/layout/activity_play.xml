@@ -130,15 +130,14 @@ tools:context=".Play">
     </LinearLayout>
 </LinearLayout>
 
-<TextView
-    android:id="@+id/status"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="X's Turn"
-    android:textSize="18sp"
-    android:textStyle="italic"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/imageView11" />
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView11" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
+        android:layout_marginEnd="16dp"
         android:text="Request"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logout" />
@@ -32,6 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
         android:text="Accept"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/request" />
@@ -41,6 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="116dp"
+        android:autoText="true"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/request"

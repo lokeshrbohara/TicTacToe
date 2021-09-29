@@ -1,6 +1,7 @@
 package com.example.tictactoe;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,13 +32,18 @@ public class Dialog extends AppCompatDialogFragment {
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        Play.fa.finish();
+                        Intent intent = new Intent(getActivity(), Play.class);
+                        startActivity(intent);
+                        
                     }
                 })
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        Play.fa.finish();
+                        Intent intent = new Intent(getActivity(), Play.class);
+                        startActivity(intent);
                     }
                 });
         st = view.findViewById(R.id.result);
