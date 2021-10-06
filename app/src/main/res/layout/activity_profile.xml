@@ -22,45 +22,55 @@
         android:id="@+id/request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="20dp"
         android:text="Request"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logout" />
+        app:layout_constraintTop_toBottomOf="@+id/accept" />
 
     <Button
         android:id="@+id/accept"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="36dp"
         android:text="Accept"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/request" />
+        app:layout_constraintTop_toBottomOf="@+id/logout" />
 
     <EditText
         android:id="@+id/requestText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="48dp"
         android:autoText="true"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/request"
-        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintHorizontal_bias="0.565"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/acceptText" />
 
     <TextView
         android:id="@+id/acceptText"
         android:layout_width="221dp"
         android:layout_height="36dp"
+        android:layout_marginTop="104dp"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/accept"
-        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintHorizontal_bias="0.523"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/onlineList"
+        android:layout_width="207dp"
+        android:layout_height="163dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.22"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/requestText"
-        app:layout_constraintVertical_bias="0.058" />
+        app:layout_constraintVertical_bias="0.047" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

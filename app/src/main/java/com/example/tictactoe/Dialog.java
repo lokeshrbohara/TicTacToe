@@ -12,12 +12,21 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class Dialog extends AppCompatDialogFragment {
 
     public TextView st;
+    private DatabaseReference mDatabaseUser;
+    private DatabaseReference mDatabaseGame;
+    String userId;
     String toDisplay;
-    public Dialog(String toSet){
+    String gameId;
+    public Dialog(String toSet, String userId, String gameId){
         this.toDisplay = toSet;
+        this.userId = userId;
+        this.gameId = gameId;
     }
     @NonNull
     @Override
@@ -29,21 +38,23 @@ public class Dialog extends AppCompatDialogFragment {
 
         builder.setView(view)
                 .setTitle("Result")
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("End Game", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Play.playEnd.finish();
-                        Intent intent = new Intent(getActivity(), Play.class);
-                        startActivity(intent);
+                        mDatabaseUser = FirebaseDatabase.getInstance().getReference("online_users").child(userId);
+                        mDatabaseGame = FirebaseDatabase.getInstance().getReference("online_game").child(gameId);
+
+                        mDatabaseUser.child("accept").setValue("");
+                        mDatabaseGame.removeValue();
+
                         
                     }
                 })
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Play.playEnd.finish();
-                        Intent intent = new Intent(getActivity(), Play.class);
-                        startActivity(intent);
+
                     }
                 });
         st = view.findViewById(R.id.result);
