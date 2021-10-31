@@ -12,5 +12,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:textColor">#42084C</item>
+        <item name="android:colorButtonNormal">@color/purple_500</item>
+        <item name="android:fontFamily">@font/bubblegum_sans</item>
     </style>
 </resources>

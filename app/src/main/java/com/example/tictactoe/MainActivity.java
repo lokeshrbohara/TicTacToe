@@ -8,6 +8,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -28,10 +33,18 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private final static int RC_SIGN_IN = 123;
     private FirebaseAuth mAuth;
+    private ImageView Logo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE); //will hide the title
+        getSupportActionBar().hide(); // hide the title bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); //enable full screen
+
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
@@ -45,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 signIn();
             }
         });
+
     }
 
     private void createRequest() {
@@ -101,12 +115,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        System.out.println("Main activity on Start");
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser!=null){
             Intent intent = new Intent(MainActivity.this , Profile.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        System.out.println("Main Activity on Pause");
+
+        if(currentUser!=null)
+            finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
+        Logo = findViewById(R.id.Logo);
+        Logo.startAnimation(animation);
+
+        System.out.println("Main Activity On Resume");
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {

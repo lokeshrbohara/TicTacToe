@@ -1,8 +1,5 @@
 package com.example.tictactoe;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,14 +7,22 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -28,29 +33,39 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Profile extends AppCompatActivity {
 
-    private Button logout;
-    private Button request;
+    private ImageButton logout;
+    private Button request, playOffline;
     private Button accept;
     private DatabaseReference mDatabase;
     private DatabaseReference reference;
     private DatabaseReference mDatabaseUser;
+    private DatabaseReference onlineDisplay;
     private String lusername;
     private String lmail;
     private String luserimage;
     private EditText requestText;
-    private TextView acceptText;
+    private TextView acceptText, username;
     private Boolean flag = false;
     private ListView onlineList;
+    private boolean conFlag = false;
+    private String lmail_cleaned;
+
+    private ImageView userProfile;
 
     ArrayList<String> onlineUsersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE); //will hide the title
+        getSupportActionBar().hide(); // hide the title bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); //enable full screen
+
         setContentView(R.layout.activity_profile);
 
         SharedPreferences preferences = getSharedPreferences("MyPrefs" , MODE_PRIVATE);
@@ -58,9 +73,17 @@ public class Profile extends AppCompatActivity {
         lmail = preferences.getString("emailID" , "");
         luserimage = preferences.getString("userPhoto" , "");
 
+        lmail_cleaned = lmail.split("@")[0];
+        lmail_cleaned = lmail_cleaned.replace(".","");
+        lmail_cleaned = lmail_cleaned.replace("$","");
+        lmail_cleaned = lmail_cleaned.replace("#","");
+        lmail_cleaned = lmail_cleaned.replace("[","");
+        lmail_cleaned = lmail_cleaned.replace("]","");
+        lmail_cleaned = lmail_cleaned.replace("/","");
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        mDatabaseUser = FirebaseDatabase.getInstance().getReference("online_users").child(lmail.split("@")[0]);
+        mDatabaseUser = FirebaseDatabase.getInstance().getReference("online_users").child(lmail_cleaned);
 
         logout = findViewById(R.id.logout);
         request = findViewById(R.id.request);
@@ -68,6 +91,12 @@ public class Profile extends AppCompatActivity {
         requestText = findViewById(R.id.requestText);
         acceptText = findViewById(R.id.acceptText);
         onlineList = findViewById(R.id.onlineList);
+        userProfile = findViewById(R.id.userprofile);
+        username = findViewById(R.id.username);
+        playOffline = findViewById(R.id.playOffline);
+
+        Glide.with(this).load(luserimage).into(userProfile);
+        username.setText(lmail_cleaned);
 
         onlineUsersList = new ArrayList<String>();
         initializeListView();
@@ -92,7 +121,7 @@ public class Profile extends AppCompatActivity {
                                 .getSharedPreferences("MyPrefs" , MODE_PRIVATE)
                                 .edit();
                         editor.putString("playerType","requestor");
-                        editor.putString("gameID",acceptorEmail+"_"+lmail.split("@")[0]);
+                        editor.putString("gameID",acceptorEmail+"_"+lmail_cleaned);
                         Log.d("WHYHERE" , "_____________________________________________");
                         editor.apply();
 
@@ -110,6 +139,7 @@ public class Profile extends AppCompatActivity {
             }
         };
         mDatabaseUser.addValueEventListener(postListener);
+
 
         onlineList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -129,26 +159,32 @@ public class Profile extends AppCompatActivity {
         request.setOnClickListener(view->{
 
             String otherUser = requestText.getText().toString();
-            mDatabase.child("online_users").child(otherUser).child("request").setValue(lmail.split("@")[0]);
+            if(otherUser.equals(lmail_cleaned))
+                Toast.makeText(getApplicationContext(), "You cannot send Request to Yourself!", Toast.LENGTH_SHORT).show();
+            else if(!onlineUsersList.contains(otherUser))
+                Toast.makeText(getApplicationContext(), "You can only Request to Online Users!", Toast.LENGTH_SHORT).show();
+            else if(!otherUser.isEmpty())
+                mDatabase.child("online_users").child(otherUser).child("request").setValue(lmail_cleaned);
         });
 
         accept.setOnClickListener(view -> {
             String acceptEmail = acceptText.getText().toString();
 
-            if(!acceptEmail.isEmpty())
+            if(!acceptEmail.isEmpty() && !acceptEmail.equals(lmail_cleaned))
             {
                 flag = true;
-                mDatabase.child("online_users").child(lmail.split("@")[0]).child("accept").setValue(acceptEmail);
-                mDatabase.child("online_users").child(acceptEmail).child("accept").setValue(lmail.split("@")[0]);
+                System.out.println("flag"+flag);
+                mDatabase.child("online_users").child(lmail_cleaned).child("accept").setValue(acceptEmail);
+                mDatabase.child("online_users").child(acceptEmail).child("accept").setValue(lmail_cleaned);
 
-                OnlineGame game = new OnlineGame(lmail.split("@")[0], acceptEmail);
-                mDatabase.child("online_game").child(lmail.split("@")[0]+"_"+acceptEmail).setValue(game);
+                OnlineGame game = new OnlineGame(lmail_cleaned, acceptEmail, "", "");
+                mDatabase.child("online_game").child(lmail_cleaned+"_"+acceptEmail).setValue(game);
 
                 SharedPreferences.Editor editor = getApplicationContext()
                         .getSharedPreferences("MyPrefs" , MODE_PRIVATE)
                         .edit();
                 editor.putString("playerType","acceptor");
-                editor.putString("gameID",lmail.split("@")[0]+"_"+acceptEmail);
+                editor.putString("gameID",lmail_cleaned+"_"+acceptEmail);
 
                 editor.apply();
 
@@ -160,8 +196,13 @@ public class Profile extends AppCompatActivity {
             }
         });
 
-        writeNewUser(lmail.split("@")[0], "", "");
+        playOffline.setOnClickListener(view->{
+            Intent intent = new Intent(Profile.this, OfflinePlay.class);
+            startActivity(intent);
+        });
 
+        writeNewUser(lmail_cleaned, "", "");
+//        manageConnection();
     }
 
     private void initializeListView(){
@@ -178,8 +219,10 @@ public class Profile extends AppCompatActivity {
                 // we are adding that item inside our array list and
                 // notifying our adapter that the data in adapter is changed.
 //                System.out.println(snapshot.getKey());
-                onlineUsersList.add(snapshot.getKey());
-                adapter.notifyDataSetChanged();
+                if(!snapshot.getKey().equals(lmail_cleaned)) {
+                    onlineUsersList.add(snapshot.getKey());
+                    adapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -238,14 +281,41 @@ public class Profile extends AppCompatActivity {
         mDatabase.child("online_users").child(userId).setValue(user);
     }
 
-    @Override
-    protected void onDestroy() {
-
-//        System.out.println("DEsrroyed");
-        super.onDestroy();
-        mDatabase.child("online_users").child(lmail.split("@")[0]).removeValue();
-    }
+//    @Override
+//    protected void onDestroy() {
 //
+////        System.out.println("DEsrroyed");
+//        super.onDestroy();
+//        mDatabase.child("online_users").child(lmail_cleaned).removeValue();
+//    }
+
+//    private void manageConnection()
+//    {
+//        onlineDisplay = FirebaseDatabase.getInstance().getReference(".info/connected");
+//        onlineDisplay.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                boolean connected = snapshot.getValue(Boolean.class);
+//                if(connected) conFlag = true;
+//                System.out.println("Hello"+ connected);
+//                if(!connected && conFlag)
+//                {
+//                    mDatabase.child("online_users").child(lmail_cleaned).removeValue();
+//                }
+//
+//                if(connected && conFlag){
+//                    writeNewUser(lmail_cleaned, "", "");
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                System.out.println("Error "+ error);
+//            }
+//        });
+//    }
+////
 //    @Override
 //    protected void onStop() {
 //        super.onStop();
@@ -254,5 +324,18 @@ public class Profile extends AppCompatActivity {
 //    }
 
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("onPause");
+        mDatabase.child("online_users").child(lmail_cleaned).removeValue();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        flag = false;
+        System.out.println("OnResume Called");
+        writeNewUser(lmail_cleaned, "", "");
+    }
 }

@@ -9,8 +9,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,18 +36,20 @@ public class Play extends AppCompatActivity {
     private String luserimage;
     private String lplayerType;
     private String lgameID;
-    private TextView status, gameCountText, totalWinText;
+    private TextView status, gameCountText, totalWinText, opponentMessage;
     private ImageView imageToChange;
     private String finalOppositePlayer;
     private int turnChanger = 0;
     private int gameCount = 1;
     private int winCount = 0;
-
-
+    private Button sendMsg;
+    private EditText message;
+    private String lmail_cleaned;
     boolean gameActive = true;
+    private boolean init = false;
     int counter = 0;
     int playerType=10;
-    int activePlayer = 0;
+    int activePlayer = turnChanger;
     int[][] winPositions = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8},
             {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
             {0, 4, 8}, {2, 4, 6}};
@@ -105,7 +112,7 @@ public class Play extends AppCompatActivity {
                     if(playerType==0){
                         winCount++;
                         totalWinText.setText(String.valueOf(winCount));
-                        winner = lmail.split("@")[0] + " has Won";
+                        winner = lmail_cleaned + " has Won";
                     }
                     else {
                         winner = finalOppositePlayer + " has Won";
@@ -115,7 +122,7 @@ public class Play extends AppCompatActivity {
                     if(playerType==1){
                         winCount++;
                         totalWinText.setText(String.valueOf(winCount));
-                        winner = lmail.split("@")[0] + " has Won";
+                        winner = lmail_cleaned + " has Won";
                     }
                     else {
                         winner = finalOppositePlayer + " has Won";
@@ -135,22 +142,31 @@ public class Play extends AppCompatActivity {
 
     public void resetGame(){
         gameActive = false;
+        turnChanger = turnChanger^1;
 
         mDatabaseGame = FirebaseDatabase.getInstance().getReference("online_game").child(lgameID);
         if(lplayerType.equals("acceptor")) {
-            status.setText(lmail.split("@")[0]+"'s Turn");
-            mDatabaseGame.child("email_accept").setValue(lmail.split("@")[0]);
+            if(turnChanger==0)
+                status.setText(lmail_cleaned+"'s Turn");
+            else
+                status.setText(finalOppositePlayer+"'s Turn");
+
+            mDatabaseGame.child("email_accept").setValue(lmail_cleaned);
             mDatabaseGame.child("email_request").setValue(finalOppositePlayer);
 
         }
         else{
-            status.setText(finalOppositePlayer+"'s Turn");
+            if(turnChanger==0)
+                status.setText(finalOppositePlayer+"'s Turn");
+            else
+                status.setText(lmail_cleaned+"'s Turn");
+
             mDatabaseGame.child("email_accept").setValue(finalOppositePlayer);
-            mDatabaseGame.child("email_request").setValue(lmail.split("@")[0]);
+            mDatabaseGame.child("email_request").setValue(lmail_cleaned);
 
         }
         counter = 0;
-        activePlayer = 0;
+        activePlayer = turnChanger;
         gameCount++;
         gameCountText.setText(String.valueOf(gameCount));
         for(int i=0; i<9; i++)
@@ -173,7 +189,7 @@ public class Play extends AppCompatActivity {
     }
 
     public void openDialog(String toSet){
-        Dialog dialog = new Dialog(toSet, lmail.split("@")[0], lgameID);
+        Dialog dialog = new Dialog(toSet, lmail_cleaned, lgameID);
         dialog.show(getSupportFragmentManager(), "message dialog");
         resetGame();
     }
@@ -184,7 +200,16 @@ public class Play extends AppCompatActivity {
 
         playEnd = this;
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE); //will hide the title
+        getSupportActionBar().hide(); // hide the title bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); //enable full screen
+
         setContentView(R.layout.activity_play);
+
+        opponentMessage = findViewById(R.id.opponentMessage);
+        message = findViewById(R.id.message);
 
         gameCountText = findViewById(R.id.gameCountText);
         gameCountText.setText(String.valueOf(gameCount));
@@ -203,10 +228,18 @@ public class Play extends AppCompatActivity {
         Log.d("lplayerType", lplayerType);
         lgameID = preferences.getString("gameID", "");
 
+        lmail_cleaned = lmail.split("@")[0];
+        lmail_cleaned = lmail_cleaned.replace(".","");
+        lmail_cleaned = lmail_cleaned.replace("$","");
+        lmail_cleaned = lmail_cleaned.replace("#","");
+        lmail_cleaned = lmail_cleaned.replace("[","");
+        lmail_cleaned = lmail_cleaned.replace("]","");
+        lmail_cleaned = lmail_cleaned.replace("/","");
+
         if(lplayerType.equals("acceptor"))
         {
             playerType=0;
-            status.setText(lmail.split("@")[0]+"'s Turn");
+            status.setText(lmail_cleaned+"'s Turn");
         }
         else
         {
@@ -216,12 +249,12 @@ public class Play extends AppCompatActivity {
 
         Log.d("check acceprter" ,String.valueOf(playerType) );
 
-        mDatabaseUser = FirebaseDatabase.getInstance().getReference("online_users").child(lmail.split("@")[0]);
+        mDatabaseUser = FirebaseDatabase.getInstance().getReference("online_users").child(lmail_cleaned);
         System.out.println(lgameID);
         mDatabaseGame = FirebaseDatabase.getInstance().getReference("online_game").child(lgameID);
 
 
-        String oppositePlayer = lgameID.replace(lmail.split("@")[0],"");
+        String oppositePlayer = lgameID.replace(lmail_cleaned,"");
         oppositePlayer = oppositePlayer.replace("_","");
 
         finalOppositePlayer = oppositePlayer;
@@ -233,7 +266,16 @@ public class Play extends AppCompatActivity {
                 String statusString=status.getText().toString();
                 // Get Post object and use the values to update the UI
                 OnlineGame post = dataSnapshot.getValue(OnlineGame.class);
-                if(lplayerType.equals("acceptor")) {
+                System.out.println("Post"+ post);
+                if(post==null && init)
+                {
+                    System.out.println("No activity");
+                    Toast.makeText(getApplicationContext(), "Opponent Left the Game!", Toast.LENGTH_SHORT).show();
+                    Play.this.finish();
+                }
+                else if(lplayerType.equals("acceptor")) {
+                    if(!post.request_msg.isEmpty())
+                        opponentMessage.setText(finalOppositePlayer+": "+post.request_msg);
                     if (!post.email_request.equals(finalOppositePlayer)) {
                         if(gameState[Integer.parseInt(post.email_request)]==2 && gameActive) {
                             gameState[Integer.parseInt(post.email_request)] = playerType^1;
@@ -245,14 +287,14 @@ public class Play extends AppCompatActivity {
                                 img1.setImageResource(R.drawable.x);
                                 activePlayer = 1;
                                 // O's Turn
-                                statusString = lmail.split("@")[0]+"'s Turn";
+                                statusString = lmail_cleaned+"'s Turn";
                                 status.setText(statusString);
                                 counter++;
                             } else {
                                 img1.setImageResource(R.drawable.o);
                                 activePlayer = 0;
                                 // X's turn"
-                                statusString = lmail.split("@")[0]+"'s Turn";
+                                statusString = lmail_cleaned+"'s Turn";
                                 status.setText(statusString);
                                 counter++;
                             }
@@ -263,6 +305,8 @@ public class Play extends AppCompatActivity {
                     else gameActive = true;
                 }
                 else{
+                    if(!post.accept_msg.isEmpty())
+                        opponentMessage.setText(finalOppositePlayer+": "+post.accept_msg);
                     if (!post.email_accept.equals(finalOppositePlayer)) {
                         if(gameState[Integer.parseInt(post.email_accept)]==2 && gameActive) {
                             gameState[Integer.parseInt(post.email_accept)] = playerType^1;
@@ -274,14 +318,14 @@ public class Play extends AppCompatActivity {
                                 img1.setImageResource(R.drawable.x);
                                 activePlayer = 1;
                                 //O's Turn
-                                statusString = lmail.split("@")[0]+"'s Turn";
+                                statusString = lmail_cleaned+"'s Turn";
                                 status.setText(statusString);
                                 counter++;
                             } else {
                                 img1.setImageResource(R.drawable.o);
                                 activePlayer = 0;
                                 //"X's turn"
-                                statusString = lmail.split("@")[0]+"'s Turn";
+                                statusString = lmail_cleaned+"'s Turn";
                                 status.setText(statusString);
                                 counter++;
                             }
@@ -291,11 +335,14 @@ public class Play extends AppCompatActivity {
                     }
                     else gameActive = true;
                 }
+                init = true;
                 someoneWon(statusString);
                 if(!someoneWon(statusString) && counter==9){
                     gameActive = false;
                     openDialog("Game is Draw");
                 }
+
+
 
             }
 
@@ -307,13 +354,25 @@ public class Play extends AppCompatActivity {
         };
         mDatabaseGame.addValueEventListener(postListener);
 
+        sendMsg = findViewById(R.id.sendMsg);
+        sendMsg.setOnClickListener(view->{
+            String msg  = message.getText().toString();
+            if(!msg.isEmpty())
+            {
+                if(playerType==0)
+                    mDatabaseGame.child("accept_msg").setValue(msg);
+                else
+                    mDatabaseGame.child("request_msg").setValue(msg);
+                message.setText("");
+            }
+        });
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
 
-        super.onDestroy();
-        mDatabaseUser.child("accept").setValue("");
+        super.onPause();
+//        mDatabaseUser.child("accept").setValue("");
         mDatabaseGame.removeValue();
 
     }

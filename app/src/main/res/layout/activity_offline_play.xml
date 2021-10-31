@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/cyan"
-    tools:context=".Play">
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/cyan"
+tools:context=".OfflinePlay">
+
 
     <ImageView
         android:id="@+id/imageView11"
         android:layout_width="359dp"
         android:layout_height="340dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
         android:background="@color/cyan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,7 +51,7 @@
             android:layout_weight="1"
             android:onClick="playerTap"
             android:padding="20sp"
-            android:tag="1"  />
+            android:tag="1" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -61,7 +60,7 @@
             android:layout_weight="1"
             android:onClick="playerTap"
             android:padding="20sp"
-            android:tag="2"  />
+            android:tag="2" />
     </LinearLayout>
 
     <LinearLayout
@@ -86,7 +85,7 @@
             android:layout_weight="1"
             android:onClick="playerTap"
             android:padding="20sp"
-            android:tag="4"  />
+            android:tag="4" />
 
         <ImageView
             android:id="@+id/imageView5"
@@ -95,7 +94,7 @@
             android:layout_weight="1"
             android:onClick="playerTap"
             android:padding="20sp"
-            android:tag="5"  />
+            android:tag="5" />
     </LinearLayout>
 
     <LinearLayout
@@ -111,7 +110,7 @@
             android:layout_weight="1"
             android:onClick="playerTap"
             android:padding="20sp"
-            android:tag="6"  />
+            android:tag="6" />
 
         <ImageView
             android:id="@+id/imageView7"
@@ -120,7 +119,7 @@
             android:layout_weight="1"
             android:onClick="playerTap"
             android:padding="20sp"
-            android:tag="7"  />
+            android:tag="7" />
 
         <ImageView
             android:id="@+id/imageView8"
@@ -129,7 +128,7 @@
             android:layout_weight="1"
             android:onClick="playerTap"
             android:padding="20sp"
-            android:tag="8"  />
+            android:tag="8" />
 
     </LinearLayout>
 </LinearLayout>
@@ -141,145 +140,16 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:fontFamily="@font/bubblegum_sans"
-        android:textColor="#42084C"
-        android:textSize="18sp"
-        android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/bubblegum_sans"
-            android:text="Total Game"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/gameCountText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/bubblegum_sans"
-            android:textColor="#42084C"
-            android:textSize="20sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/bubblegum_sans"
-            android:text="Total Wins"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/totalWinText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/bubblegum_sans"
-            android:textColor="#42084C"
-            android:textSize="20sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="100dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView11">
-
-        <EditText
-            android:id="@+id/message"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="0.8"
-            android:ems="10"
-            android:fontFamily="@font/bubblegum_sans"
-            android:hint="Type your message"
-            android:inputType="textPersonName"
-            android:textColor="#42084C"
-            android:textColorHint="#AAAAAA"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/sendMsg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="0.2"
-            android:fontFamily="@font/bubblegum_sans"
-            android:text=">" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:orientation="horizontal"
+        android:fontFamily="@font/bubblegum_sans"
+        android:text="X's Turn"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="italic"
         app:layout_constraintBottom_toTopOf="@+id/imageView11"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-        <TextView
-            android:id="@+id/opponentMessage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fontFamily="@font/bubblegum_sans"
-            android:textAlignment="textEnd"
-            android:textColor="#42084C"
-            android:textSize="16sp" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
 
     <LinearLayout
         android:id="@+id/linearLayout7"
@@ -307,4 +177,5 @@
             android:textColorHighlight="#00BCD4"
             android:textSize="45sp" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
